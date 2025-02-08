@@ -1,7 +1,11 @@
 {
-  "name": "my-package",
+  "name": "my-app",
+  "version": "1.0.0",
+  "main": "server.js",
   "scripts": {
-    "build": "babel src -d lib",
-    "test": "jest"
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
   }
 }
