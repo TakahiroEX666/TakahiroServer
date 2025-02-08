@@ -3,19 +3,24 @@ const app = express();
 
 app.use(express.json());
 
-let lastMessage = "No messages yet"; // ตัวแปรเก็บข้อความล่าสุด
+let lastMessage = null; // ตัวแปรเก็บข้อความล่าสุด
 
 // Endpoint สำหรับรับข้อความ (POST)
 app.post("/webhook", (req, res) => {
-    const message = req.body.message;
-    lastMessage = message; // อัปเดตข้อความล่าสุด
-    console.log("Received Message:", message);
-    res.send({ status: "OK", received: message });
+    lastMessage = req.body.message; // บันทึกข้อความล่าสุด
+    console.log("Received Message:", lastMessage);
+    res.send({ status: "OK", received: lastMessage });
 });
 
-// Endpoint สำหรับดึงข้อความล่าสุด (GET)
+// Endpoint สำหรับ GET แล้วลบทันที
 app.get("/get-message", (req, res) => {
-    res.send({ message: lastMessage });
+    if (lastMessage) {
+        const messageToSend = lastMessage; // เก็บข้อความก่อนลบ
+        lastMessage = null; // ลบข้อความหลังส่ง
+        res.send({ message: messageToSend });
+    } else {
+        res.send({ message: "No new messages" });
+    }
 });
 
 const PORT = process.env.PORT || 3000;
