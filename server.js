@@ -2,7 +2,6 @@ const express = require("express");
 const Database = require("better-sqlite3");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const rateLimit = require("express-rate-limit");
 
 const app = express();
 app.use(express.json());
