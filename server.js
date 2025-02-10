@@ -1,71 +1,74 @@
 const express = require("express");
-const sqlite3 = require("sqlite3").verbose();
+const Database = require("better-sqlite3");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const app = express();
+const rateLimit = require("express-rate-limit");
 
+const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
 
-let AliothMessage = null;
-let CupidMessage = null;
-
-
-const db = new sqlite3.Database("./database.db", sqlite3.OPEN_READWRITE, (err) => {
-    if (err) return console.error(err.message);
-    console.log("✅ Connected to SQLite database");
-});
+// เปิด SQLite Database
+const db = new Database("./database.db", { verbose: console.log });
+db.pragma("journal_mode = WAL"); // เปิด WAL Mode
 
 // สร้างตารางถ้ายังไม่มี
-db.run(`CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    age INTEGER
-)`);
+db.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        age INTEGER
+    );
+`);
+
+// 📌 Memory Cache สำหรับ /getalioth และ /getcupid
+let aliothCache = null;
+let cupidCache = null;
+let lastFetchTime = 0;
+const CACHE_TIMEOUT = 5000; // แคช 5 วินาที
+
+// 📌 Rate Limit ป้องกัน Request ถี่เกินไป
+const getAliothLimiter = rateLimit({
+    windowMs: 10000, // 10 วินาที
+    max: 3, // จำกัด 3 ครั้งต่อ 10 วินาที
+    message: { error: "❌ Request ถี่เกินไป กรุณารอ 10 วินาที" }
+});
 
 // 📌 Read (GET) - ดึงข้อมูลทั้งหมด
 app.get("/users", (req, res) => {
-    db.all("SELECT * FROM users", [], (err, rows) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json(rows);
-    });
+    const rows = db.prepare("SELECT * FROM users").all();
+    res.json(rows);
 });
 
 // 📌 Read (GET) - ดึงข้อมูลตาม ID
 app.get("/users/:id", (req, res) => {
-    db.get("SELECT * FROM users WHERE id = ?", [req.params.id], (err, row) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json(row);
-    });
+    const row = db.prepare("SELECT * FROM users WHERE id = ?").get(req.params.id);
+    res.json(row);
 });
 
 // 📌 Write (POST) - เพิ่มข้อมูล
 app.post("/users", (req, res) => {
     const { name, age } = req.body;
-    db.run("INSERT INTO users (name, age) VALUES (?, ?)", [name, age], function (err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ id: this.lastID });
-    });
+    const stmt = db.prepare("INSERT INTO users (name, age) VALUES (?, ?)");
+    const result = stmt.run(name, age);
+    res.json({ id: result.lastInsertRowid });
 });
 
 // 📌 Update (PUT) - อัปเดตข้อมูล
 app.put("/users/:id", (req, res) => {
     const { name, age } = req.body;
-    db.run("UPDATE users SET name = ?, age = ? WHERE id = ?", [name, age, req.params.id], function (err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ updated: this.changes });
-    });
+    const stmt = db.prepare("UPDATE users SET name = ?, age = ? WHERE id = ?");
+    const result = stmt.run(name, age, req.params.id);
+    res.json({ updated: result.changes });
 });
 
 // 📌 Delete (DELETE) - ลบข้อมูล
 app.delete("/users/:id", (req, res) => {
-    db.run("DELETE FROM users WHERE id = ?", [req.params.id], function (err) {
-        if (err) return res.status(500).json({ error: err.message });
-        res.json({ deleted: this.changes });
-    });
+    const stmt = db.prepare("DELETE FROM users WHERE id = ?");
+    const result = stmt.run(req.params.id);
+    res.json({ deleted: result.changes });
 });
-
 
 app.get("/server", (req, res) => {
     res.send({ message: "Server Running" });
@@ -99,7 +102,9 @@ app.get("/getcupid", (req, res) => {
     }
 });
 
+// 📌 
+// 📌 Start Server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`✅ Server running on port ${PORT}`);
 });
