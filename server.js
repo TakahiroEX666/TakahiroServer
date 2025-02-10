@@ -22,18 +22,6 @@ db.exec(`
     );
 `);
 
-// 📌 Memory Cache สำหรับ /getalioth และ /getcupid
-let aliothCache = null;
-let cupidCache = null;
-let lastFetchTime = 0;
-const CACHE_TIMEOUT = 5000; // แคช 5 วินาที
-
-// 📌 Rate Limit ป้องกัน Request ถี่เกินไป
-const getAliothLimiter = rateLimit({
-    windowMs: 10000, // 10 วินาที
-    max: 3, // จำกัด 3 ครั้งต่อ 10 วินาที
-    message: { error: "❌ Request ถี่เกินไป กรุณารอ 10 วินาที" }
-});
 
 // 📌 Read (GET) - ดึงข้อมูลทั้งหมด
 app.get("/users", (req, res) => {
