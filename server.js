@@ -9,6 +9,9 @@ app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
 
+let AliothMessage = null;
+let CupidMessage = null;
+
 // เปิด SQLite Database
 const db = new Database("./database.db", { verbose: console.log });
 db.pragma("journal_mode = WAL"); // เปิด WAL Mode
