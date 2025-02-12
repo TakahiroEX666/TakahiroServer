@@ -46,8 +46,10 @@ app.get("/mapbox", (req, res) => {
 // ตั้งค่าการเก็บไฟล์
 const storage = multer.diskStorage({
     destination: './uploads/',  // โฟลเดอร์เก็บไฟล์
+    //filename: (req, file, cb) => {
+        //cb(null, Date.now() + path.extname(file.originalname)); // เปลี่ยนชื่อไฟล์ให้ไม่ซ้ำกัน
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // เปลี่ยนชื่อไฟล์ให้ไม่ซ้ำกัน
+        cb(null, file.originalname); // ใช้ชื่อไฟล์เดิม
     }
 });
 
