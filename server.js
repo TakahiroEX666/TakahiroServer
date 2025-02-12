@@ -7,10 +7,41 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(cors());
+
+// ให้โฟลเดอร์ 'public' เป็น Static Web
+app.use(express.static(path.join(__dirname, "public")));
+
+// เปิด /mapbox เพื่อเรียกไฟล์ mapbox.html
+app.get("/mapbox", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "mapbox.html"));
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // อนุญาตการเข้าถึง API จากทุกที่
-app.use(cors());
+
 
 // ตั้งค่าการเก็บไฟล์
 const storage = multer.diskStorage({
