@@ -11,8 +11,8 @@ let AliothMessage = null;
 let CupidMessage = null;
 
 // MapActivity
-app.use(express.static(path.join(__dirname, "map")));
-app.get("/index", (req, res) => {res.sendFile(path.join(__dirname, "map", "index.html"));});
+app.use(express.static(path.join(__dirname, "public")));
+app.get("/index", (req, res) => {res.sendFile(path.join(__dirname, "public", "index.html"));});
 
 //PartFile
 const storage = multer.diskStorage({
