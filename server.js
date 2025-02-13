@@ -30,38 +30,18 @@ if (!fs.existsSync('./uploads')) {
     fs.mkdirSync('./uploads');
 }
 
-//Upload to cupid
-app.post('/upload/tocupid', upload.single('file'), (req, res) => {
+//Upload Files
+app.post('/upload/', upload.single('file'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
     }
-    //res.json({ fileUrl: `${req.protocol}://${req.get('host')}/files/${req.file.filename}`
-    CupidMessage = {
-       method: 'sendfile',
-       content: `${req.protocol}://${req.get('host')}/files/${req.file.filename}`,
-       description: '',
-       script: '',
-    };
-    res.json(CupidMessage);
+    res.json(`${req.protocol}://${req.get('host')}/files/${req.file.filename}`);
 });
 
-//Upload to alioth
-app.post('/upload/toalioth', upload.single('file'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ error: 'No file uploaded' });
-    }
-    //res.json({ fileUrl: `${req.protocol}://${req.get('host')}/files/${req.file.filename}` });
-    AliothMessage = {
-       method: 'sendfile',
-       content: `${req.protocol}://${req.get('host')}/files/${req.file.filename}`,
-       description: '',
-       script: '',
-    };
-    res.json(AliothMessage);
-});
 
 //Download File
 app.use('/files', express.static('./uploads'));
+
 
 //toAlioth
 app.post("/toalioth", (req, res) => {
