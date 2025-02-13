@@ -58,7 +58,7 @@ app.post("/tocupid", (req, res) => {
 //getAlioth
 app.get("/getalioth", (req, res) => {
     if (AliothMessage) {
-        res.send({ message: AliothMessage });
+        res.send(AliothMessage);
         AliothMessage = null;
     } else {
         res.send({ message: "❌" });
@@ -68,7 +68,7 @@ app.get("/getalioth", (req, res) => {
 //getCupid
 app.get("/getcupid", (req, res) => {
     if (CupidMessage) {
-        res.send({ message: CupidMessage });
+        res.send(CupidMessage);
         CupidMessage = null;
     } else {
         res.send({ message: "❌" });
