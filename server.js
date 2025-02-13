@@ -35,8 +35,14 @@ app.post('/upload/tocupid', upload.single('file'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
     }
-    CupidMessage = `${req.protocol}://${req.get('host')}/files/${req.file.filename}`;
-    //res.json({ fileUrl: `${req.protocol}://${req.get('host')}/files/${req.file.filename}` });
+    //res.json({ fileUrl: `${req.protocol}://${req.get('host')}/files/${req.file.filename}`
+    CupidMessage = {
+       method: 'sendfile',
+       content: '${req.protocol}://${req.get('host')}/files/${req.file.filename}`,
+       description: '',
+       script: '',
+    };
+    res.json(CupidMessage);
 });
 
 //Upload to alioth
@@ -44,8 +50,14 @@ app.post('/upload/toalioth', upload.single('file'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
     }
-    AliothMessage = `${req.protocol}://${req.get('host')}/files/${req.file.filename}`;
     //res.json({ fileUrl: `${req.protocol}://${req.get('host')}/files/${req.file.filename}` });
+    AliothMessage = {
+       method: 'sendfile',
+       content: '${req.protocol}://${req.get('host')}/files/${req.file.filename}`,
+       description: '',
+       script: '',
+    };
+    res.json(AliothMessage);
 });
 
 //Download File
@@ -61,7 +73,7 @@ app.post("/toalioth", (req, res) => {
 app.post("/tocupid", (req, res) => {
     CupidMessage = req.body.message;
     res.send({ status: "OK", received: CupidMessage });
-});
+}); 
 
 //getAlioth
 app.get("/getalioth", (req, res) => {
