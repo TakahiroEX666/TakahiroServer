@@ -13,8 +13,8 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, "public")));
 
 // เปิด /mapbox เพื่อเรียกไฟล์ mapbox.html
-app.get("/mapbox", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "mapbox.html"));
+app.get("/index", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 
