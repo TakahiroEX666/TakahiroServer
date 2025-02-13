@@ -67,8 +67,7 @@ app.get("/getalioth", (req, res) => {
 
 //getCupid
 app.get("/getcupid", (req, res) => {
-    res.send(CupidMessage);
-    if (CupidMessage!=null) {
+    if (CupidMessage) {
         res.send(CupidMessage);
         CupidMessage = null;
     } else {
