@@ -67,12 +67,13 @@ app.get("/getalioth", (req, res) => {
 
 //getCupid
 app.get("/getcupid", (req, res) => {
-    if (CupidMessage!=null) {
-        res.send(CupidMessage);
-        CupidMessage = null;
-    } else {
-        res.send({ message: "❌" });
-    }
+    res.send(CupidMessage);
+   // if (CupidMessage!=null) {
+    //    res.send(CupidMessage);
+    //    CupidMessage = null;
+  //  } else {
+     //   res.send({ message: "❌" });
+   // }
 });
 
 const PORT = process.env.PORT || 3000;
