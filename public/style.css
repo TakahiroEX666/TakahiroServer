@@ -7,3 +7,20 @@ path.selected{
 .regione{
   transition: all 200ms ease-in-out;
 }
+
+#region-names {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    max-width: 200px;
+    overflow-y: auto;
+}
+
+.region-label {
+    margin-bottom: 5px;
+}
