@@ -38,7 +38,7 @@ app.post('/upload/tocupid', upload.single('file'), (req, res) => {
     //res.json({ fileUrl: `${req.protocol}://${req.get('host')}/files/${req.file.filename}`
     CupidMessage = {
        method: 'sendfile',
-       content: '${req.protocol}://${req.get('host')}/files/${req.file.filename}`,
+       content: `${req.protocol}://${req.get('host')}/files/${req.file.filename}`,
        description: '',
        script: '',
     };
@@ -53,7 +53,7 @@ app.post('/upload/toalioth', upload.single('file'), (req, res) => {
     //res.json({ fileUrl: `${req.protocol}://${req.get('host')}/files/${req.file.filename}` });
     AliothMessage = {
        method: 'sendfile',
-       content: '${req.protocol}://${req.get('host')}/files/${req.file.filename}`,
+       content: `${req.protocol}://${req.get('host')}/files/${req.file.filename}`,
        description: '',
        script: '',
     };
@@ -99,3 +99,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
