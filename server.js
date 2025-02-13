@@ -35,7 +35,8 @@ app.post('/upload/tocupid', upload.single('file'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
     }
-    res.json({ fileUrl: `${req.protocol}://${req.get('host')}/files/${req.file.filename}` });
+    CupidMessage = `${req.protocol}://${req.get('host')}/files/${req.file.filename}`;
+    //res.json({ fileUrl: `${req.protocol}://${req.get('host')}/files/${req.file.filename}` });
 });
 
 //Upload to alioth
@@ -43,7 +44,8 @@ app.post('/upload/toalioth', upload.single('file'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
     }
-    res.json({ fileUrl: `${req.protocol}://${req.get('host')}/files/${req.file.filename}` });
+    AliothMessage = `${req.protocol}://${req.get('host')}/files/${req.file.filename}`;
+    //res.json({ fileUrl: `${req.protocol}://${req.get('host')}/files/${req.file.filename}` });
 });
 
 //Download File
