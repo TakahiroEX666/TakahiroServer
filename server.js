@@ -6,25 +6,23 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 wordcut.init();
 
-// API endpoint for calculating Levenshtein Similarity
+// 🔹 เพิ่ม middleware เพื่อให้รองรับ JSON body
+app.use(express.json());
+
+// 📌 API คำนวณ Levenshtein Similarity
 app.get('/levenshtein-similarity', (req, res) => {
-    // Get str1 and str2 from query parameters
     const str1 = req.query.str1 || '';
     const str2 = req.query.str2 || '';
 
-    // Check if both strings are provided
     if (!str1 || !str2) {
         return res.status(400).json({ error: 'Please provide both str1 and str2 as query parameters.' });
     }
 
-    // Calculate Levenshtein Distance
+    // คำนวณระยะทาง Levenshtein Distance
     const distance = levenshtein(str1, str2);
-
-    // Calculate Levenshtein Similarity
     const maxLength = Math.max(str1.length, str2.length);
-    const similarity = 1 - distance / maxLength;
+    const similarity = maxLength > 0 ? (1 - distance / maxLength) : 1; // ป้องกันการหาร 0
 
-    // Return the result as JSON
     res.json({
         str1,
         str2,
@@ -34,6 +32,7 @@ app.get('/levenshtein-similarity', (req, res) => {
     });
 });
 
+// 📌 API ตัดคำ (Tokenize ภาษาไทย)
 app.post("/tokenize", (req, res) => {
     const text = req.body.text;
     if (!text) {
@@ -43,7 +42,8 @@ app.post("/tokenize", (req, res) => {
     const tokens = wordcut.cut(text).split("|");
     res.json({ tokens });
 });
-// Start the server
+
+// 🔹 Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
