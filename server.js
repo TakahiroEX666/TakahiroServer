@@ -1,8 +1,10 @@
 const express = require('express');
 const levenshtein = require('js-levenshtein');
+const wordcut = require("wordcut");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+wordcut.init();
 
 // API endpoint for calculating Levenshtein Similarity
 app.get('/levenshtein-similarity', (req, res) => {
@@ -32,6 +34,15 @@ app.get('/levenshtein-similarity', (req, res) => {
     });
 });
 
+app.post("/tokenize", (req, res) => {
+    const text = req.body.text;
+    if (!text) {
+        return res.status(400).json({ error: "Missing 'text' in request body" });
+    }
+
+    const tokens = wordcut.cut(text).split("|");
+    res.json({ tokens });
+});
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
